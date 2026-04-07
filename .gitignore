@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Environment
+.env*
+
+# Sanity
+techask-studio/
+seed.mjs
+seed-hero.mjs
+sync-cms.mjs
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

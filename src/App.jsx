@@ -1,31 +1,34 @@
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
+import HeroOld from './components/HeroOld'
 import VideoShowcase from './components/VideoShowcase'
 import Logos from './components/Logos'
 import Problem from './components/Problem'
-import Services from './components/Services'
+import AboutUs from './components/AboutUs'
+
 import Process from './components/Process'
-import CaseStudies from './components/CaseStudies'
-import Leadership from './components/Leadership'
 import FAQ from './components/FAQ'
-import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
+import IntroAnimation from './components/IntroAnimation'
 
 export default function App() {
   return (
-    <>
+    <IntroAnimation>
       <Navbar />
-      <Hero />
-      <VideoShowcase />
-      <Logos />
-      <Problem />
-      <Services />
-      <Process />
-      {/* <CaseStudies /> */}
-      {/* <Leadership /> */}
-      <FAQ />
-      <FinalCTA />
+
+      {/* All content above the footer sits in a z-index:2 container
+          so the sticky footer "reveals" from behind as you scroll */}
+      <div style={{ position: 'relative', zIndex: 2, backgroundColor: '#fff' }}>
+        <HeroOld />
+        <VideoShowcase />
+        <Logos />
+        <Problem />
+        <AboutUs />
+        <Process />
+        <FAQ />
+      </div>
+
       <Footer />
-    </>
+    </IntroAnimation>
   )
 }
+
