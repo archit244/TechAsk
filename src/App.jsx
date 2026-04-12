@@ -1,34 +1,43 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import HeroOld from './components/HeroOld'
-import VideoShowcase from './components/VideoShowcase'
 import Logos from './components/Logos'
 import Problem from './components/Problem'
-import AboutUs from './components/AboutUs'
-
+import Services from './components/Services'
 import Process from './components/Process'
 import FAQ from './components/FAQ'
 import Footer from './components/Footer'
-import IntroAnimation from './components/IntroAnimation'
+import StrategyVideo from './components/StrategyVideo'
+import ThankYou from './pages/ThankYou'
+
+function Home() {
+  return (
+    <div className="reveal-wrapper">
+      <main className="main-content">
+        <Navbar />
+        <HeroOld />
+        <StrategyVideo />
+        <Logos />
+        <Problem />
+        <Services />
+        <Process />
+        <FAQ />
+      </main>
+      <div className="sticky-footer">
+        <Footer />
+      </div>
+    </div>
+  )
+}
 
 export default function App() {
   return (
-    <IntroAnimation>
-      <Navbar />
-
-      {/* All content above the footer sits in a z-index:2 container
-          so the sticky footer "reveals" from behind as you scroll */}
-      <div style={{ position: 'relative', zIndex: 2, backgroundColor: '#fff' }}>
-        <HeroOld />
-        <VideoShowcase />
-        <Logos />
-        <Problem />
-        <AboutUs />
-        <Process />
-        <FAQ />
-      </div>
-
-      <Footer />
-    </IntroAnimation>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

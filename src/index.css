@@ -38,7 +38,7 @@
   }
 
   h1 { font-size: clamp(1.9rem, 4.2vw, 3rem);   letter-spacing: -0.02em; }
-  h2 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); letter-spacing: -0.015em; }
+  h2 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); letter-spacing: -0.02em; font-weight: 600; }
   h3 { font-size: clamp(1.05rem, 1.8vw, 1.28rem); }
 
   p  { @apply text-slate-500 leading-relaxed; }
@@ -50,7 +50,7 @@
 
   /* Gradient text */
   .grad-text {
-    background: linear-gradient(135deg, #0b3b6e 0%, #0ea5e9 55%, #38bdf8 100%);
+    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -59,8 +59,8 @@
   /* Primary gradient button */
   .btn-primary {
     @apply inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-sm text-white cursor-pointer border-none whitespace-nowrap tracking-wide;
-    background: linear-gradient(135deg, #0b3b6e 0%, #0ea5e9 60%, #38bdf8 100%);
-    box-shadow: 0 4px 16px rgba(14,165,233,0.40);
+    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.40);
     transition: all .3s cubic-bezier(0.4,0,0.2,1);
   }
   .btn-primary:hover {
@@ -88,6 +88,25 @@
     right: 0;
     background: linear-gradient(to left, #ffffff, transparent);
   }
+
+  /* Animated Gradient Text */
+  .animated-gradient-text-content {
+    display: inline-block;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    background-size: 300% 100%;
+    animation: gradient-animation linear infinite;
+    padding-bottom: 0.15em;
+    margin-bottom: -0.15em;
+  }
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* ── CUSTOM UTILITIES ────────────────────────────────────── */
@@ -95,7 +114,7 @@
 
   /* Gradient button background utility */
   .bg-grad-btn {
-    background: linear-gradient(135deg, #0b3b6e 0%, #0ea5e9 60%, #38bdf8 100%);
+    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
   }
 
   /* Glass card */
@@ -120,6 +139,24 @@
 
   /* Mobile nav slide-down */
   .animate-slide-down { animation: slideDown 0.24s cubic-bezier(0.25,0.46,0.45,0.94); }
+
+  /* New Gradient System */
+  .text-gradient {
+    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+  }
+
+  .btn-gradient-hover {
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-gradient-hover:hover {
+    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB) !important;
+    transform: translateY(-2px);
+  }
 }
 
 /* ── BORDER BEAM ─────────────────────────────────────────── */
@@ -189,10 +226,10 @@
 /* ── MISC ─────────────────────────────────────────────────── */
 .aspect-16-9 { aspect-ratio: 16 / 9; }
 .text-clamp-hero  { font-size: clamp(2rem, 3.2vw, 2.95rem); }
-.text-clamp-h2    { font-size: clamp(1.6rem, 3.2vw, 2.4rem); }
+.text-clamp-h2    { font-size: clamp(1.6rem, 3.2vw, 2.4rem); letter-spacing: -0.02em; font-weight: 600; }
 .text-clamp-h2-lg { font-size: clamp(1.6rem, 3vw, 2.6rem); }
 .text-clamp-h2-xl { font-size: clamp(2rem, 4.2vw, 3rem); }
-.text-clamp-svc   { font-size: clamp(1.3rem, 2.2vw, 1.85rem); }
+.text-clamp-svc   { font-size: clamp(1.6rem, 3.2vw, 2.4rem); letter-spacing: -0.02em; font-weight: 600; }
 .text-clamp-prob  { font-size: clamp(1.6rem, 3.2vw, 2.8rem); }
 .text-clamp-num   { font-size: clamp(3rem, 5vw, 4.5rem); }
 .text-clamp-card  { font-size: clamp(1rem, 1.5vw, 1.4rem); }
@@ -213,10 +250,7 @@
 /* ── HERO CARD ── */
 @media (min-width: 1024px) {
   .section-hero_main {
-    position: sticky;
-    top: 40px;
-    z-index: -100;              /* behind the video section */
-    background-color: #fff;
+    background-color: #2563EB;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
     width: 100%;
@@ -251,7 +285,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background-color: #fff;
+  background-color: #2563EB;
   border-bottom-right-radius: 24px;
   border-bottom-left-radius: 24px;
   width: 100%;
@@ -275,7 +309,7 @@
 
 /* ── HEADLINE ── */
 .hero-heading {
-  color: #000;
+  color: #FFFFFF;
   letter-spacing: 1px;
   font-family: 'Sora', sans-serif;
   font-size: clamp(2.4rem, 4.5vw, 60px); /* responsive but capped at 60px */
@@ -287,7 +321,7 @@
 
 /* ── SUBHEADLINE ── */
 .hero-subheadingm {
-  color: #555;
+  color: #FFFFFF;
   font-family: 'Sora', sans-serif;
   font-size: clamp(1rem, 1.6vw, 22px);
   font-weight: 400;
@@ -331,10 +365,8 @@
   font-size: clamp(28px, 3vw, 40px);
   font-weight: 700;
   text-transform: uppercase;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #000;
+  color: #FFFFFF;
+  -webkit-text-fill-color: #FFFFFF;
   white-space: nowrap;
   display: inline-block;
   flex-shrink: 0;
@@ -449,3 +481,23 @@
 
 
 
+
+/* ── REVEAL FOOTER ANIMATION ── */
+.reveal-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.main-content {
+  position: relative;
+  z-index: 2; /* Sits above the footer */
+  background-color: #fff; /* Opaque background to hide footer */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1; /* Sits below the main content */
+  width: 100%;
+}

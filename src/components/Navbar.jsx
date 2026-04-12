@@ -49,19 +49,34 @@ export default function Navbar() {
   return (
     <nav style={{
       position: 'relative', top: 0, zIndex: 1000, width: '100%',
-      background: '#fff',
+      background: '#2563EB',
       /* no border-bottom: seamless with hero */
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 5%', height: 64, marginTop: 10,
+      padding: '0 5%', height: 64,
     }}>
       {/* Logo */}
-      <a id="nav-logo" href="#" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-        <span style={{ fontFamily: 'Sora, sans-serif', fontWeight: 800, fontSize: 22, color: '#000', letterSpacing: '-0.5px' }}>tech</span>
-        <span style={{
-          background: '#000', color: '#fff', borderRadius: '50%',
-          fontFamily: 'Sora, sans-serif', fontWeight: 800, fontSize: 13,
-          width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        }}>Ask</span>
+      <a id="nav-logo" href="#" style={{ 
+        textDecoration: 'none', 
+        display: 'flex', 
+        alignItems: 'center',
+        position: 'relative',
+        width: '180px', 
+        height: '64px',
+        zIndex: 1001
+      }}>
+        <img 
+          src="/Gemini_Generated_Image_k3eigvk3eigvk3ei-removebg-preview.png" 
+          alt="TechAsk Logo" 
+          style={{ 
+            height: '110px', 
+            width: 'auto',
+            display: 'block',
+            position: 'absolute',
+            top: '-15px', 
+            left: 0,
+            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))'
+          }} 
+        />
       </a>
 
 

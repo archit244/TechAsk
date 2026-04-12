@@ -1,97 +1,65 @@
-# Techask — Performance Marketing Agency Website
+# TechAsk - Modern Marketing Agency Landing Page
 
-A modern, high-end single-page website for Techask. Built with React + Vite, content managed via Sanity CMS. Features a sophisticated, monochrome "Schbang-style" aesthetic.
+A high-performance, premium marketing agency website built with React, Vite, and Framer Motion. This project features high-end aesthetics, smooth scroll animations, and a responsive design system.
 
----
+## 🚀 Tech Stack
 
-## Tech Stack
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom CSS
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
+- **CMS (Upcoming)**: [Sanity.io](https://www.sanity.io/)
 
-| Layer | Technology |
-|---|---|
-| **Framework** | React 19 + Vite 8 |
-| **Styling** | Vanilla CSS (`src/index.css`) & Tailwind Utility Classes |
-| **Animations** | Custom CSS Transitions & Framer Motion |
-| **Background FX** | `@paper-design/shaders-react` (WebGL MeshGradients) |
-| **CMS Data** | Sanity v3 (Cloud-hosted Headless CMS) |
-| **CMS Client** | `@sanity/client` + `@sanity/image-url` |
-
----
-
-## Cleaned Project Structure
+## 📁 Code Structure
 
 ```text
 techask/
-├── src/                        # React frontend source
-│   ├── main.jsx                # App entry point
-│   ├── App.jsx                 # Root component — orchestrates the page sections
-│   ├── index.css               # Global styles, variables, typography (Sora)
-│   │
-│   ├── components/             # Lean, verified, and heavily commented components
-│   │   ├── Navbar.jsx          # Fixed nav with frosted glass scroll effect
-│   │   ├── HeroOld.jsx         # Hero section & seamless Lead Capture Form
-│   │   ├── VideoShowcase.jsx   # Video player placeholder section
-│   │   ├── Logos.jsx           # Marquee brand scrolling component
-│   │   ├── Problem.jsx         # Auto-rotating 3D WebGL Web Carousel
-│   │   ├── AboutUs.jsx         # Highly complex scroll-snapping Services Shutter
-│   │   ├── Process.jsx         # 4-step Growth Framework (Grid Layout)
-│   │   ├── FAQ.jsx             # Expanding Text Accordion (Minimalist)
-│   │   ├── Footer.jsx          # Sticky bottom reveal footer
-│   │   ├── IntroAnimation.jsx  # Complex Timeline loader & transition
-│   │   └── TiltedCard.jsx      # Reusable 3D mouse-tracking card
-│   │
-│   └── lib/
-│       ├── sanityClient.js     # Configured Sanity client instance
-│       └── useSanity.js        # React hook to fetch from Sanity cleanly
-│
-├── techask-studio/             # Sanity CMS Studio (Backend App)
-│   ├── sanity.config.js        # Defines Singletons vs Collections
-│   └── schemas/                # Document Schemas (faq, problem, etc.)
-│
-├── .env.local                  # Environment variables
-├── vite.config.js              # Vite build config
-└── package.json                
+├── public/                 # Static assets (images, fonts)
+│   ├── fonts/              # Custom brand fonts
+│   └── ...                 # Optimized image assets
+├── src/
+│   ├── components/         # Core UI sections
+│   │   ├── Navbar.jsx      # Sticky header with transparent logo
+│   │   ├── HeroOld.jsx     # High-impact sticky intro section
+│   │   ├── StrategyVideo.jsx # Vimeo-powered scroll-reveal video
+│   │   ├── Logos.jsx       # Marquee trusted brands strip
+│   │   ├── Problem.jsx     # Card-based problem/solution carousel
+│   │   ├── Services.jsx    # Services showcase with mobile-first ordering
+│   │   ├── Process.jsx     # Step-by-step framework section
+│   │   ├── FAQ.jsx         # Questions and answers accordion
+│   │   └── Footer.jsx      # Schbang-inspired responsive footer
+│   ├── lib/                # Shared utilities (Sanity client setup)
+│   ├── App.jsx             # Main application entry and section layout
+│   ├── main.jsx            # React mounting point
+│   └── index.css           # Global design tokens and tailwind base
+├── techask-studio/         # Sanity.io Studio (for managing content)
+└── package.json            # Project dependencies and scripts
 ```
 
-*Note: All unused experimental files (Prism, obsolete services, redundant CTAs) have been structurally purged to ensure absolute codebase cleanliness.*
+## 🧹 Recent Cleanup
+
+We have performed a full audit and cleanup of the codebase:
+- **Removed Unused Components**: Deleted all legacy/experimental components (`AboutUs`, `PartnersGrid`, `VideoShowcase`, etc.) to keep the bundle size small.
+- **Optimized Assets**: Purged unused image files from the `public/` directory.
+- **Refined Styling**: Cleaned up the global stylesheet and unified the brand color system (`#2563EB`).
+
+## 🛠️ Development
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Run Local Dev Server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for Production**:
+   ```bash
+   npm run build
+   ```
 
 ---
-
-## Content Management (Sanity)
-
-This website is fully integrated with Sanity CMS.
-
-1. **How it works:** When users visit the site, the React components fetch data from Sanity Cloud using standard GROQ queries.
-2. **Fallbacks Engine:** If Sanity fails to load, is empty, or the user is offline, the website uses perfectly designed hardcoded `FALLBACK` data to ensure the site never breaks.
-3. **Singletons vs Collections:**
-   - **Singleton:** Unique sections that only exist once (Hero, Problem, Footer). Editors cannot create "new" ones, only edit the master record.
-   - **Collection:** Repeatable sections (FAQs, Services). Editors can add, delete, and reorder these at will.
-
----
-
-## Running Locally
-
-To run the frontend:
-```bash
-npm install
-npm run dev
-# Views at http://localhost:5173
-```
-
-To run the Sanity CMS Studio:
-```bash
-cd techask-studio
-npm run dev
-# Views at http://localhost:3333
-```
-
----
-
-## Environment Variables
-
-| Variable | Value | Needed For |
-|---|---|---|
-| `VITE_SANITY_PROJECT_ID` | `csxo7tuk` | Binding Frontend to CMS |
-| `VITE_SANITY_DATASET` | `production` | Targeting the live dataset |
-| `SANITY_API_TOKEN` | *[Needs configuration]* | Required for automated data-seeding |
-
-*To modify the automated seed script to auto-fill the CMS with local code defaults, the API token must be configured.*
+*Proudly created in India.*

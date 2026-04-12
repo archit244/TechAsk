@@ -20,6 +20,11 @@ techask-studio/
 seed.mjs
 seed-hero.mjs
 sync-cms.mjs
+sync-labels.mjs
+sync-navbar.mjs
+sync-real-data.mjs
+sync-thankyou.mjs
+sync-video.mjs
 
 # Editor directories and files
 .vscode/*

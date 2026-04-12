@@ -1,23 +1,28 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import GradientText from './GradientText'
+import { useSanity } from '../lib/useSanity'
+import { renderFormattedText } from '../lib/renderFormattedText'
+
+const HERO_QUERY = `*[_type == "hero" && _id == "hero"][0]`
 
 /* ─────────────────────────────────────────────────────────────
    MARQUEE
 ───────────────────────────────────────────────────────────────*/
 function StarSVG() {
-  return <span className="star-icon-spin" aria-hidden="true">✦</span>
+  return <span className="star-icon-spin" style={{ color: '#FFFFFF' }} aria-hidden="true">✦</span>
 }
 
 const UPPER = "CREATE. SCALE. DOMINATE."
 const LOWER = "CREATE. SCALE. DOMINATE."
 
-function MarqueeInner() {
+function MarqueeInner({ text }) {
   const items = []
+  const displayText = text || UPPER
   for (let i = 0; i < 10; i++) {
     items.push(
-      <span key={`u${i}`} className="marquee-text-2">{UPPER}</span>,
+      <span key={`u${i}`} className="marquee-text-2">{displayText}</span>,
       <StarSVG key={`s1${i}`} />,
-      <span key={`l${i}`} className="marquee-text-2">{LOWER}</span>,
-      <StarSVG key={`s2${i}`} />,
     )
   }
   return <>{items}</>
@@ -107,11 +112,33 @@ function TSelect({ name, value, onChange }) {
   )
 }
 
-function ContactForm() {
+function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
+  const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', budget: '' })
   const [hovered, setHovered] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
+  const [error, setError] = useState('')
+  const [isPhoneFocused, setIsPhoneFocused] = useState(false)
+
+  const isValid = form.name.trim() !== '' && form.email.includes('@') && form.phone.length === 10 && form.company.trim() !== '' && form.budget !== '';
+
+  const set = k => e => {
+    let val = e.target.value;
+    // Phone logic: only numbers, max 10
+    if (k === 'phone') {
+      val = val.replace(/\D/g, '').slice(0, 10);
+    }
+    setForm(f => ({ ...f, [k]: val }));
+    setError('');
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (form.phone.length !== 10) {
+      setError('Please enter a valid 10-digit phone number');
+      return;
+    }
+    navigate('/thank-you');
+  }
 
   return (
     <div style={{
@@ -130,71 +157,85 @@ function ContactForm() {
         letterSpacing: '-0.02em', color: '#0a0a0a',
         margin: '0 0 22px', lineHeight: 1.3,
       }}>
-        Let's Grow Your Business
+        {formHeading || "Let's Grow Your Business"}
       </h3>
 
-      {submitted ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: '50%', background: '#000',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="16" height="16" viewBox="0 0 22 22" fill="none">
-              <path d="M4 11l5 5 9-9" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <p style={{ fontFamily: F, fontWeight: 700, fontSize: '0.88rem', color: '#0a0a0a', margin: 0 }}>
-            We'll reach out within 24 hours.
-          </p>
-        </div>
-      ) : (
-        <form
-          onSubmit={e => { e.preventDefault(); setSubmitted(true) }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
-        >
-          <Field label="Name">
-            <TInput id="contact-name" name="name" value={form.name} onChange={set('name')} placeholder="Rahul Sharma" />
+
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
+      >
+          <Field label="FULL NAME">
+            <TInput id="contact-name" name="name" value={form.name} onChange={set('name')} placeholder="Your full name" />
           </Field>
 
-          <Field label="Email">
-            <TInput type="email" name="email" value={form.email} onChange={set('email')} placeholder="rahul@company.com" />
+          <Field label="EMAIL">
+            <TInput type="email" name="email" value={form.email} onChange={set('email')} placeholder="you@company.com" />
           </Field>
 
-          <Field label="Phone Number">
-            <TInput type="tel" name="phone" value={form.phone} onChange={set('phone')} placeholder="+91 98765 43210" />
+          <Field label="PHONE NUMBER">
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <span style={{ 
+                position: 'absolute', 
+                left: 0, 
+                bottom: '7px', 
+                fontFamily: F, 
+                fontSize: '0.92rem', 
+                color: isPhoneFocused || form.phone ? '#0a0a0a' : 'rgba(10,10,10,0.4)', 
+                fontWeight: 500,
+                pointerEvents: 'none',
+                transition: 'color 0.2s ease'
+              }}>
+                +91 
+              </span>
+              <input 
+                type="tel" 
+                name="phone" 
+                value={form.phone} 
+                onChange={set('phone')} 
+                onFocus={() => setIsPhoneFocused(true)}
+                onBlur={() => setIsPhoneFocused(false)}
+                placeholder="98XXXXXX"
+                style={{ ...baseInput, paddingLeft: '32px' }}
+                autoComplete="tel"
+              />
+            </div>
+            {error && <span style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 600, marginTop: 4 }}>{error}</span>}
           </Field>
 
-          <Field label="Company Name">
-            <TInput name="company" value={form.company} onChange={set('company')} placeholder="Your Company Pvt. Ltd." />
+          <Field label="COMPANY NAME">
+            <TInput name="company" value={form.company} onChange={set('company')} placeholder="Your company name" />
           </Field>
 
-          <Field label="Budget">
+          <Field label="BUDGET">
             <TSelect name="budget" value={form.budget} onChange={set('budget')} />
           </Field>
 
-          {/* CTA — black pill, matches navbar */}
+          {/* CTA — blue pill */}
           <button
             type="submit"
+            disabled={!isValid}
+            className="btn-gradient-hover"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             style={{
               marginTop: 8,
               alignSelf: 'flex-start',
               fontFamily: F, fontSize: '0.84rem', fontWeight: 700,
-              color: '#fff', background: '#000',
+              color: '#fff', background: '#2563EB',
               border: 'none', borderRadius: 999,
               padding: '12px 30px',
-              cursor: 'pointer',
+              width: '100%',
+              cursor: isValid ? 'pointer' : 'not-allowed',
               letterSpacing: '0.01em',
-              transform: hovered ? 'scale(1.02)' : 'scale(1)',
-              transition: 'transform 0.2s ease, opacity 0.2s ease',
-              opacity: hovered ? 0.88 : 1,
+              transform: isValid && hovered ? 'scale(1.02)' : 'scale(1)',
+              transition: 'transform 0.2s ease, background 0.3s ease, opacity 0.2s ease',
+              opacity: !isValid ? 0.4 : (hovered ? 0.95 : 1),
             }}
           >
-            Get a Free Consultation →
+            {ctaText || "Book My Strategy Call"}
           </button>
         </form>
-      )}
     </div>
   )
 }
@@ -204,6 +245,7 @@ function ContactForm() {
 ───────────────────────────────────────────────────────────────*/
 export default function HeroOld() {
   const [isMobile, setIsMobile] = useState(false)
+  const { data: hero } = useSanity(HERO_QUERY)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024)
@@ -212,17 +254,29 @@ export default function HeroOld() {
     return () => window.removeEventListener('resize', check)
   }, [])
 
+  const badgeText = hero?.badgeText || "Trusted By [100+] Founders"
+  const titleText = hero?.title || "Your Creative, Media & Technology {Transformation} Partner"
+  
+  const subtitle = hero?.subtitle || "We help growth-focused businesses connect strategy, campaigns, creative, and digital execution so every marketing move leads to clearer business results."
+  const formProps = {
+    formHeading: hero?.formHeading,
+    ctaText: hero?.ctaText,
+    successTitle: hero?.successTitle,
+    successBody: hero?.successBody
+  }
+  const marqueeText = hero?.marqueeText || UPPER
+
   if (isMobile) {
     return (
       <div
         className="section-hero_main"
         style={{
           height: 'auto',
-          minHeight: '100vh',
+          minHeight: 'calc(100vh - 64px)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          background: '#fff',
+          background: '#2563EB',
         }}
       >
         <div
@@ -242,44 +296,81 @@ export default function HeroOld() {
         >
           {/* TEXT CONTENT */}
           <div className="hero-text-col" style={{ width: '100%', textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            {/* Trusted Badge */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: '#FFFFFF',
+              padding: '4px 10px 4px 6px',
+              borderRadius: '6px',
+              marginTop: '32px',
+              marginBottom: '12px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}>
+              <div style={{ display: 'flex', marginRight: '8px' }}>
+                {[
+                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+                  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
+                ].map((src, i) => (
+                  <img 
+                    key={i}
+                    src={src} 
+                    alt="Founder" 
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      border: '2px solid #FFFFFF',
+                      marginLeft: i === 0 ? 0 : '-8px',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ))}
+              </div>
+              <GradientText 
+                colors={["#2563EB", "#7C3AED", "#2563EB"]} 
+                showAnimation={true}
+                className="font-bold text-[0.8rem] tracking-tight"
+                style={{ fontFamily: "'Sora', sans-serif" }}
+              >
+                {renderFormattedText(badgeText)}
+              </GradientText>
+            </div>
             <h1
               className="hero-heading"
               style={{ 
-                fontSize: 'clamp(2rem, 8vw, 2.3rem)', // Slightly smaller for better proportion
+                fontSize: 'clamp(2rem, 8vw, 2.3rem)',
                 marginBottom: 20,
-                marginTop: 40,
+                marginTop: 0,
                 lineHeight: 1.05,
                 fontWeight: 700,
-                color: '#000',
+                color: '#FFFFFF',
                 textAlign: 'left',
                 fontFamily: "'Sora', sans-serif"
               }}
             >
-              Your Creative,<br />
-              Media &<br />
-              Technology<br />
-              Transformation<br />
-              Partner
+              {renderFormattedText(titleText)}
             </h1>
             <div
               className="hero-subheadingm"
               style={{ 
                 width: '100%',
-                maxWidth: '100%', // Removed 90% to avoid possible shift
+                maxWidth: '100%',
                 textAlign: 'left',
                 fontSize: '1.05rem', 
-                color: '#1a1a1a',
+                color: '#FFFFFF',
                 lineHeight: 1.5,
                 fontWeight: 500,
                 margin: '0',
                 fontFamily: "'Sora', sans-serif"
               }}
             >
-              We're a team of 1200+ Specialists delivering award-winning work for 350+ brands worldwide, 11 years and counting!
+              {subtitle}
             </div>
           </div>
           <div className="hero-form-col" style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-            <ContactForm />
+            <ContactForm {...formProps} />
           </div>
         </div>
 
@@ -290,7 +381,7 @@ export default function HeroOld() {
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
-          background: '#fff',
+          background: '#2563EB',
           margin: '20px 0',
         }}>
           <div style={{
@@ -301,7 +392,7 @@ export default function HeroOld() {
             willChange: 'transform',
             animation: 'marquee-horizontal-alt 80s linear infinite',
           }}>
-            <MarqueeInner /><MarqueeInner />
+            <MarqueeInner text={marqueeText} /><MarqueeInner text={marqueeText} />
           </div>
         </div>
       </div>
@@ -313,12 +404,12 @@ export default function HeroOld() {
     <div
       className="section-hero_main"
       style={{
-        height: 'calc(100vh - 74px - 100px)',
+        height: 'calc(100vh - 64px)',
         minHeight: 380,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        marginBottom: 10,
+        background: '#2563EB',
       }}
     >
       <div
@@ -335,18 +426,58 @@ export default function HeroOld() {
         }}
       >
         <div style={{ flex: '0 0 58%', minWidth: 0 }}>
+          {/* Trusted Badge Desktop */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            backgroundColor: '#FFFFFF',
+            padding: '5px 12px 5px 6px',
+            borderRadius: '6px',
+            marginBottom: '28px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{ display: 'flex', marginRight: '10px' }}>
+              {[
+                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+                "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
+              ].map((src, i) => (
+                <img 
+                  key={i}
+                  src={src} 
+                  alt="Founder" 
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    border: '2px solid #FFFFFF',
+                    marginLeft: i === 0 ? 0 : '-10px',
+                    objectFit: 'cover'
+                  }}
+                />
+              ))}
+            </div>
+            <span style={{
+              fontFamily: "'Sora', sans-serif",
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              color: '#2563EB',
+              letterSpacing: '-0.01em'
+            }}>
+              {renderFormattedText(badgeText)}
+            </span>
+          </div>
           <h1
             className="hero-heading"
-            style={{ fontSize: 'clamp(1.8rem, 3.2vw, 48px)', marginBottom: 14 }}
+            style={{ fontSize: 'clamp(1.8rem, 3.2vw, 48px)', marginBottom: 14, color: '#FFFFFF' }}
           >
-            <strong>Your Creative, Media &amp; Technology Transformation Partner</strong>
+            <strong>{renderFormattedText(titleText)}</strong>
           </h1>
           <div
             className="hero-subheadingm"
-            style={{ maxWidth: '100%', fontSize: 'clamp(0.88rem, 1.3vw, 18px)', marginTop: 0 }}
+            style={{ maxWidth: '100%', fontSize: 'clamp(0.88rem, 1.3vw, 18px)', marginTop: 0, color: '#FFFFFF' }}
           >
-            We're a team of 1200+ Specialists delivering award-winning work
-            for 350+ brands worldwide, 11 years and counting!
+            {subtitle}
           </div>
         </div>
 
@@ -358,7 +489,7 @@ export default function HeroOld() {
           justifyContent: 'flex-end',
           marginRight: 30,
         }}>
-          <ContactForm />
+          <ContactForm {...formProps} />
         </div>
       </div>
 
@@ -369,7 +500,8 @@ export default function HeroOld() {
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        background: '#fff',
+        background: '#2563EB',
+        transform: 'translateY(-50px)',
       }}>
         <div style={{
           display: 'flex',
@@ -379,7 +511,7 @@ export default function HeroOld() {
           willChange: 'transform',
           animation: 'marquee-horizontal-alt 80s linear infinite',
         }}>
-          <MarqueeInner /><MarqueeInner />
+          <MarqueeInner text={marqueeText} /><MarqueeInner text={marqueeText} />
         </div>
       </div>
     </div>

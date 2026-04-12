@@ -1,80 +1,140 @@
+import { useState, useEffect } from 'react'
 import { FaLinkedinIn, FaInstagram, FaYoutube, FaFacebookF } from 'react-icons/fa'
+import GradientText from './GradientText'
+import { useSanity } from '../lib/useSanity'
+
+const FOOTER_QUERY = `*[_type == "footer" && _id == "footer"][0]`
 
 export default function Footer() {
+  const [isMobile, setIsMobile] = useState(false);
+  const { data: footerData } = useSanity(FOOTER_QUERY);
+
+  const brandingLine1 = footerData?.brandingLine1 || 'Techask';
+  const brandingLine2 = footerData?.brandingLine2 || 'India';
+  const subText = footerData?.subText || 'Proudly created in India.';
+  const copyrightText = footerData?.copyrightText || 'All Right Reserved, All Wrong Reversed.';
+  const linkedinUrl  = footerData?.linkedinUrl  || '#';
+  const instagramUrl = footerData?.instagramUrl || '#';
+  const youtubeUrl   = footerData?.youtubeUrl   || '#';
+  const facebookUrl  = footerData?.facebookUrl  || '#';
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   return (
     <footer style={{ 
-      position: 'sticky', 
-      bottom: 0, 
-      zIndex: 0, 
       width: '100%', 
-      backgroundColor: '#000',
-      padding: '80px 5% 40px',
+      backgroundColor: '#2563EB',
+      padding: isMobile ? '50px 6% 30px' : '60px 5% 40px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      textAlign: 'center',
       fontFamily: "'Sora', sans-serif",
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      overflow: 'hidden'
     }}>
 
-      {/* ── BLACK FOOTER CORE ── */}
-      <div style={{ width: '100%', maxWidth: '1200px' }}>
-        
-        {/* Brand Name */}
-        <div style={{ marginBottom: 40, width: '100%' }}>
+      {/* ── TYPOGRAPHY SECTION ── */}
+      <div style={{ 
+        width: '100%', 
+        borderBottom: '1px solid rgba(255,255,255,0.15)',
+        paddingBottom: isMobile ? '25px' : '60px',
+        marginBottom: isMobile ? '20px' : '40px',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'flex-end', 
+          width: 'fit-content',
+          margin: isMobile ? '0 0 20px 0' : '0 0 40px 0'
+        }}>
           <h2 style={{
             fontFamily: "'Sora', sans-serif",
             fontWeight: 900,
-            fontSize: 'clamp(64px, 15vw, 180px)',
-            color: '#fff',
-            lineHeight: 0.9,
-            letterSpacing: '-0.04em',
+            fontSize: isMobile ? 'clamp(50px, 15vw, 90px)' : 'clamp(40px, 10vw, 180px)',
+            lineHeight: 0.85,
+            letterSpacing: '-0.05em',
             margin: 0,
-            textTransform: 'none',
+            textAlign: 'right',
+            color: '#FFFFFF'
           }}>
-            Techask
+            {brandingLine1}
           </h2>
-
-          <button 
-             onClick={() => {
-               window.scrollTo({ top: 0, behavior: 'smooth' });
-               setTimeout(() => {
-                 const el = document.getElementById('contact-name');
-                 if (el) el.focus();
-               }, 1000);
-             }}
-             style={{
-               color: '#000',
-               backgroundColor: '#fff',
-               fontFamily: "'Sora', sans-serif",
-               fontSize: 14,
-               fontWeight: 700,
-               padding: '12px 32px',
-               borderRadius: '999px',
-               cursor: 'pointer',
-               border: 'none',
-               marginTop: 24,
-               transition: 'transform 0.2s ease',
-             }}
-             onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-             onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-          >
-             Start a Conversation
-          </button>
+          <h2 style={{
+            fontFamily: "'Sora', sans-serif",
+            fontWeight: 900,
+            fontSize: isMobile ? 'clamp(24px, 7vw, 45px)' : 'clamp(20px, 5vw, 90px)',
+            lineHeight: 0.85,
+            letterSpacing: '-0.05em',
+            margin: 0,
+            textAlign: 'right',
+            color: '#FFFFFF',
+            opacity: 0.95
+          }}>
+            {brandingLine2}
+          </h2>
         </div>
 
+        {/* CTA Button below text */}
+        <button 
+           onClick={() => {
+             window.scrollTo({ top: 0, behavior: 'smooth' });
+             setTimeout(() => {
+               const el = document.getElementById('contact-name');
+               if (el) el.focus();
+             }, 1000);
+           }}
+           style={{
+             color: '#000',
+             backgroundColor: '#fff',
+             fontFamily: "'Sora', sans-serif",
+             fontSize: isMobile ? 14 : 15,
+             fontWeight: 700,
+             padding: isMobile ? '10px 30px' : '14px 40px',
+             borderRadius: '999px',
+             cursor: 'pointer',
+             border: 'none',
+             transition: 'transform 0.2s ease',
+             boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)',
+           }}
+           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+           onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+           Talk to our Expert
+        </button>
+      </div>
+
+      {/* ── BOTTOM BAR: SOCIALS - NAV - COPYRIGHT ── */}
+      <div style={{ 
+        width: '100%', 
+        maxWidth: '1300px',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: isMobile ? '30px' : '30px'
+      }}>
+        
         {/* Social Icons */}
-        <div style={{ display: 'flex', gap: 24, marginBottom: 40, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 24 }}>
           {[
-            { Icon: FaLinkedinIn, href: '#' },
-            { Icon: FaInstagram, href: '#' },
-            { Icon: FaYoutube, href: '#' },
-            { Icon: FaFacebookF, href: '#' },
+            { Icon: FaLinkedinIn, href: linkedinUrl },
+            { Icon: FaInstagram,  href: instagramUrl },
+            { Icon: FaYoutube,    href: youtubeUrl },
+            { Icon: FaFacebookF,  href: facebookUrl },
           ].map(({ Icon, href }, i) => (
             <a key={i} href={href} style={{ color: '#fff', transition: 'opacity 0.2s ease' }}
                onMouseEnter={e => e.currentTarget.style.opacity = '0.6'}
                onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
-              <Icon size={22} />
+              <Icon size={isMobile ? 24 : 20} />
             </a>
           ))}
         </div>
@@ -82,24 +142,61 @@ export default function Footer() {
         {/* Nav Links */}
         <nav style={{ 
           display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: '12px 24px', 
-          justifyContent: 'center', 
-          marginBottom: 48,
+          flexWrap: 'wrap',
+          gap: isMobile ? '24px' : '32px', 
+          justifyContent: 'center'
         }}>
-          {['About', 'Contact', 'Case Studies', 'Blog', 'Privacy'].map(label => (
-            <a key={label} href={`/${label.toLowerCase().replace(' ', '')}`}
-               style={{ color: '#fff', fontSize: 13, fontWeight: 500, textDecoration: 'none', opacity: 0.75 }}>
-              {label}
+          {[
+            { label: 'Contact', id: 'contact' },
+            { label: 'Services', id: 'services' },
+            { label: 'Framework', id: 'process' },
+            { label: 'FAQ', id: 'faq' }
+          ].map(item => (
+            <a 
+              key={item.label} 
+              href={`#${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                if (item.id === 'contact') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setTimeout(() => {
+                    const el = document.getElementById('contact-name');
+                    if (el) el.focus();
+                  }, 1000);
+                } else {
+                  const el = document.getElementById(item.id);
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              style={{ 
+                color: '#fff', 
+                fontSize: 14, 
+                fontWeight: 500, 
+                textDecoration: 'none', 
+                opacity: 0.9,
+                cursor: 'pointer'
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}
+            >
+              {item.label}
             </a>
           ))}
         </nav>
 
         {/* Copyright */}
-        <div style={{ paddingTop: 32, borderTop: '0.5px solid rgba(255,255,255,0.1)', width: '100%' }}>
-          <p style={{ color: '#fff', opacity: 0.5, fontSize: 12, lineHeight: 1.8, margin: 0 }}>
-            Proudly created in India.<br />
-            All Right Reserved, All Wrong Reversed.
+        <div>
+          <p style={{ 
+            color: '#fff', 
+            opacity: 0.8, 
+            fontSize: 12, 
+            textAlign: isMobile ? 'center' : 'right',
+            lineHeight: 1.6, 
+            margin: 0,
+            fontFamily: "'Sora', sans-serif"
+          }}>
+            {subText}<br />
+            {copyrightText}
           </p>
         </div>
 

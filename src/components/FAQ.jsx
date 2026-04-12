@@ -45,8 +45,8 @@ export default function FAQ() {
   const [open, setOpen]       = useState(null)
   const [hovered, setHovered] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
-  // const { data: faqs }        = useSanity(FAQ_QUERY)
-  const items                 = FALLBACK_FAQS // (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
+  const { data: faqs }        = useSanity(FAQ_QUERY)
+  const items                 = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
 
   const CARD_W = 240
 

@@ -1,4 +1,6 @@
+import GradientText from './GradientText'
 import { useSanity } from '../lib/useSanity'
+import { renderFormattedText } from '../lib/renderFormattedText'
 
 const LOGOS_QUERY = `*[_type == "logos" && _id == "logos"][0]{ heading, brands }`
 
@@ -8,17 +10,16 @@ const FALLBACK = {
 }
 
 export default function Logos() {
-  // const { data: logos } = useSanity(LOGOS_QUERY)
-  const logos = null
-  const heading = logos?.heading || FALLBACK.heading
+  const { data: logos } = useSanity(LOGOS_QUERY)
+  const heading = logos?.heading || "Trusted by [Growth-Focused] Brands"
   const brands  = (logos?.brands && logos.brands.length > 0) ? logos.brands : FALLBACK.brands
   const doubled = [...brands, ...brands]  // seamless loop
 
   return (
     <section className="py-16 overflow-hidden bg-white" style={{ fontFamily: "'Sora', sans-serif" }}>
-      <div className="w-full max-w-[1160px] mx-auto px-6">
-        <h2 className="text-center text-clamp-h2 mb-10 text-black tracking-tight" style={{ fontFamily: "'Sora', sans-serif" }}>
-          {heading}
+      <div className="w-full max-w-[1160px] mx-auto px-6 text-center">
+        <h2 className="text-clamp-h2 mb-10 text-black inline-block" style={{ whiteSpace: 'pre-line' }}>
+          {renderFormattedText(heading, ["#2563EB", "#7C3AED", "#2563EB"], 6)}
         </h2>
       </div>
 
