@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { client } from './sanityClient'
-import imageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url'
 
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client)
 export function urlFor(source) {
   return builder.image(source)
 }
