@@ -24,7 +24,7 @@ const MOB_H      = 360
 export default function Problem() {
   const [active, setActive] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
-  const { data: problem } = useSanity(PROBLEM_QUERY)
+  const { data: problem, loading } = useSanity(PROBLEM_QUERY)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024)
@@ -32,6 +32,10 @@ export default function Problem() {
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
+
+  if (loading) {
+    return <section style={{ minHeight: '100vh', background: '#fff' }} />;
+  }
 
   const curW = isMobile ? MOB_W : CARD_W_PX
   const curH = isMobile ? MOB_H : CARD_H_PX

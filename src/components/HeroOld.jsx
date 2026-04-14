@@ -245,7 +245,7 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
 ───────────────────────────────────────────────────────────────*/
 export default function HeroOld() {
   const [isMobile, setIsMobile] = useState(false)
-  const { data: hero } = useSanity(HERO_QUERY)
+  const { data: hero, loading } = useSanity(HERO_QUERY)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024)
@@ -253,6 +253,19 @@ export default function HeroOld() {
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
+
+  if (loading) {
+    return (
+      <div 
+        style={{ 
+          height: 'calc(100vh - 64px)', 
+          minHeight: 380, 
+          background: '#2563EB',
+          width: '100%'
+        }} 
+      />
+    )
+  }
 
   const badgeText = hero?.badgeText || "Trusted By [100+] Founders"
   const titleText = hero?.title || "Your Creative, Media & Technology {Transformation} Partner"

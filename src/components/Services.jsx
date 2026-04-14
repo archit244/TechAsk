@@ -36,11 +36,8 @@ const SERVICES_DATA = [
 
 export default function Services() {
   const [isMobile, setIsMobile] = React.useState(false);
-  const { data } = useSanity(SERVICES_QUERY);
-  const { data: headingData } = useSanity(SERVICES_HEADING_QUERY);
-  const servicesList = (data && data.length > 0) ? data : SERVICES_DATA;
-
-  const headingText = headingData || 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
+  const { data, loading: loadingServices } = useSanity(SERVICES_QUERY);
+  const { data: headingData, loading: loadingHeading } = useSanity(SERVICES_HEADING_QUERY);
 
   React.useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -48,6 +45,13 @@ export default function Services() {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  if (loadingServices || loadingHeading) {
+    return <section style={{ minHeight: '600px', background: '#fff' }} />;
+  }
+
+  const servicesList = (data && data.length > 0) ? data : SERVICES_DATA;
+  const headingText = headingData || 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
 
   const handleCTA = (e) => {
     if (e) e.preventDefault();

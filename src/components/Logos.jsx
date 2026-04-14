@@ -10,7 +10,11 @@ const FALLBACK = {
 }
 
 export default function Logos() {
-  const { data: logos } = useSanity(LOGOS_QUERY)
+  const { data: logos, loading } = useSanity(LOGOS_QUERY)
+
+  if (loading) {
+    return <section style={{ minHeight: '200px', background: '#fff' }} />;
+  }
   const heading = logos?.heading || "Trusted by [Growth-Focused] Brands"
   const brands  = (logos?.brands && logos.brands.length > 0) ? logos.brands : FALLBACK.brands
   const doubled = [...brands, ...brands]  // seamless loop

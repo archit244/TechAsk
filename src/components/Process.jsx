@@ -53,7 +53,11 @@ const PROCESS_STEPS = [
 ];
 
 export default function Process() {
-  const { data: processData } = useSanity(PROCESS_QUERY);
+  const { data: processData, loading } = useSanity(PROCESS_QUERY);
+
+  if (loading) {
+    return <section style={{ minHeight: '500px', background: '#fff' }} />;
+  }
   
   const headingText = processData?.heading || "Our Proven [4-Step Growth] Framework";
 

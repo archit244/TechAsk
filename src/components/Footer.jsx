@@ -7,7 +7,18 @@ const FOOTER_QUERY = `*[_type == "footer" && _id == "footer"][0]`
 
 export default function Footer() {
   const [isMobile, setIsMobile] = useState(false);
-  const { data: footerData } = useSanity(FOOTER_QUERY);
+  const { data: footerData, loading } = useSanity(FOOTER_QUERY);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  if (loading) {
+    return <footer style={{ minHeight: '400px', background: '#2563EB' }} />;
+  }
 
   const brandingLine1 = footerData?.brandingLine1 || 'Techask';
   const brandingLine2 = footerData?.brandingLine2 || 'India';
@@ -17,13 +28,6 @@ export default function Footer() {
   const instagramUrl = footerData?.instagramUrl || '#';
   const youtubeUrl   = footerData?.youtubeUrl   || '#';
   const facebookUrl  = footerData?.facebookUrl  || '#';
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 1024);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
 
   return (
     <footer style={{ 

@@ -47,14 +47,8 @@ export default function FAQ() {
   const [open, setOpen]       = useState(null)
   const [hovered, setHovered] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
-  const { data: faqs }        = useSanity(FAQ_QUERY)
-  const { data: headerData }  = useSanity(FAQ_HEADER_QUERY)
-  const items                 = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
-
-  const headingText = headerData?.sectionHeading || 'Frequently Asked Questions.'
-  const subheadingText = headerData?.sectionSubheading || 'Everything you need to know about working with Techask.'
-
-  const CARD_W = 240
+  const { data: faqs, loading: loadingFaqs }        = useSanity(FAQ_QUERY)
+  const { data: headerData, loading: loadingHeader }  = useSanity(FAQ_HEADER_QUERY)
 
   /* Responsive check */
   useState(() => {
@@ -62,6 +56,16 @@ export default function FAQ() {
       setIsMobile(window.innerWidth < 1024)
     }
   }, [])
+
+  if (loadingFaqs || loadingHeader) {
+    return <section style={{ minHeight: '400px', background: '#fff' }} />;
+  }
+
+  const items                 = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
+  const headingText = headerData?.sectionHeading || 'Frequently Asked Questions.'
+  const subheadingText = headerData?.sectionSubheading || 'Everything you need to know about working with Techask.'
+
+  const CARD_W = 240
 
   return (
     <>

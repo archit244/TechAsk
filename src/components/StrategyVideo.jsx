@@ -5,7 +5,11 @@ import { renderFormattedText } from '../lib/renderFormattedText'
 const VIDEO_QUERY = `*[_type == "video" && _id == "video"][0]`
 
 export default function StrategyVideo() {
-  const { data: videoData } = useSanity(VIDEO_QUERY)
+  const { data: videoData, loading } = useSanity(VIDEO_QUERY)
+
+  if (loading) {
+    return <section style={{ minHeight: '400px', background: '#ffffff' }} />;
+  }
   const heading = videoData?.heading || "No spam. 30-min [strategy call] with our growth lead."
 
   return (
