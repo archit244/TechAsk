@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useSanity } from '../lib/useSanity'
+import { renderFormattedText } from '../lib/renderFormattedText'
 
 const FAQ_QUERY = `*[_type == "faq"] | order(order asc){ question, answer, order }`
+const FAQ_HEADER_QUERY = `*[_type == "faq"] | order(order asc)[0]{ sectionHeading, sectionSubheading }`
 
 const FALLBACK_FAQS = [
   { question: 'What type of Digital Marketing Services does Techask offer?',              answer: 'We offer a full suite of digital marketing services including Performance Marketing (Google, Meta, LinkedIn Ads), SEO & Local SEO, Social Media Marketing, Web & Landing Page Development, Analytics & Automation, and Influencer & ORM management.' },
@@ -46,7 +48,11 @@ export default function FAQ() {
   const [hovered, setHovered] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
   const { data: faqs }        = useSanity(FAQ_QUERY)
+  const { data: headerData }  = useSanity(FAQ_HEADER_QUERY)
   const items                 = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
+
+  const headingText = headerData?.sectionHeading || 'Frequently Asked Questions.'
+  const subheadingText = headerData?.sectionSubheading || 'Everything you need to know about working with Techask.'
 
   const CARD_W = 240
 
@@ -80,9 +86,8 @@ export default function FAQ() {
               letterSpacing: '-0.02em',
               margin: '0 0 4px',
               fontFamily: "'Sora', sans-serif",
-              whiteSpace: 'nowrap',
             }}>
-              Frequently Asked Questions.
+              {renderFormattedText(headingText)}
             </h2>
             <p style={{
               fontSize: 'clamp(0.85rem, 1.2vw, 0.98rem)',
@@ -92,7 +97,7 @@ export default function FAQ() {
               fontFamily: "'Sora', sans-serif",
               lineHeight: 1.7,
             }}>
-              Everything you need to know about working with Techask.
+              {subheadingText}
             </p>
           </div>
 

@@ -1,8 +1,10 @@
 import React from 'react';
 import GradientText from './GradientText';
 import { useSanity, urlFor } from '../lib/useSanity';
+import { renderFormattedText } from '../lib/renderFormattedText';
 
 const SERVICES_QUERY = `*[_type == "service"] | order(order asc)`
+const SERVICES_HEADING_QUERY = `*[_type == "service"] | order(order asc)[0].sectionHeading`
 
 const SERVICES_DATA = [
   {
@@ -35,7 +37,10 @@ const SERVICES_DATA = [
 export default function Services() {
   const [isMobile, setIsMobile] = React.useState(false);
   const { data } = useSanity(SERVICES_QUERY);
+  const { data: headingData } = useSanity(SERVICES_HEADING_QUERY);
   const servicesList = (data && data.length > 0) ? data : SERVICES_DATA;
+
+  const headingText = headingData || 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
 
   React.useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -69,12 +74,10 @@ export default function Services() {
             lineHeight: 1.15,
             margin: 0,
             letterSpacing: '-0.03em',
-            color: '#000000'
+            color: '#000000',
+            whiteSpace: 'pre-line'
           }}>
-            Everything You Need Under One Roof:<br />
-            <GradientText colors={["#2563EB", "#7C3AED", "#2563EB"]} showAnimation={false}>Strategy</GradientText>,{' '}
-            <GradientText colors={["#2563EB", "#7C3AED", "#2563EB"]} showAnimation={false}>Execution</GradientText> &{' '}
-            <GradientText colors={["#2563EB", "#7C3AED", "#2563EB"]} showAnimation={false}>Scale</GradientText>
+            {renderFormattedText(headingText)}
           </h2>
         </div>
       </div>
