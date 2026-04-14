@@ -35,17 +35,21 @@ function MarqueeInner({ text }) {
 ───────────────────────────────────────────────────────────────*/
 const F = "'Sora', sans-serif"
 
-function Field({ label, children }) {
+function Field({ label, htmlFor, children }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <label style={{
-        fontFamily: F,
-        fontSize: '0.65rem',
-        fontWeight: 600,
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        color: 'rgba(0,0,0,0.72)',
-      }}>
+      <label 
+        htmlFor={htmlFor}
+        style={{
+          fontFamily: F,
+          fontSize: '0.65rem',
+          fontWeight: 600,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'rgba(0,0,0,0.72)',
+          cursor: 'pointer'
+        }}
+      >
         {label}
       </label>
       {children}
@@ -69,13 +73,17 @@ const baseInput = {
   transition: 'border-color 0.25s ease',
 }
 
-function TInput({ type = 'text', name, value, onChange, placeholder, id }) {
+function TInput({ type = 'text', name, value, onChange, placeholder, id, autoComplete }) {
   const [focused, setFocused] = useState(false)
   return (
     <input
       id={id}
-      type={type} name={name} value={value} onChange={onChange}
+      type={type} 
+      name={name} 
+      value={value} 
+      onChange={onChange}
       placeholder={placeholder}
+      autoComplete={autoComplete}
       style={{ ...baseInput, borderBottomColor: focused ? '#0a0a0a' : 'rgba(0,0,0,0.15)' }}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
@@ -83,11 +91,13 @@ function TInput({ type = 'text', name, value, onChange, placeholder, id }) {
   )
 }
 
-function TSelect({ name, value, onChange }) {
+function TSelect({ name, value, onChange, id, autoComplete }) {
   const [focused, setFocused] = useState(false)
   return (
     <select
+      id={id}
       name={name} value={value} onChange={onChange}
+      autoComplete={autoComplete}
       style={{
         ...baseInput,
         appearance: 'none',
@@ -165,15 +175,15 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
         onSubmit={handleSubmit}
         style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
       >
-          <Field label="FULL NAME">
-            <TInput id="contact-name" name="name" value={form.name} onChange={set('name')} placeholder="Your full name" />
+          <Field label="FULL NAME" htmlFor="contact-name">
+            <TInput id="contact-name" name="name" value={form.name} onChange={set('name')} placeholder="Your full name" autoComplete="name" />
           </Field>
 
-          <Field label="EMAIL">
-            <TInput type="email" name="email" value={form.email} onChange={set('email')} placeholder="you@company.com" />
+          <Field label="EMAIL" htmlFor="contact-email">
+            <TInput id="contact-email" type="email" name="email" value={form.email} onChange={set('email')} placeholder="you@company.com" autoComplete="email" />
           </Field>
 
-          <Field label="PHONE NUMBER">
+          <Field label="PHONE NUMBER" htmlFor="contact-phone">
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <span style={{ 
                 position: 'absolute', 
@@ -189,6 +199,7 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
                 +91 
               </span>
               <input 
+                id="contact-phone"
                 type="tel" 
                 name="phone" 
                 value={form.phone} 
@@ -203,12 +214,12 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
             {error && <span style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 600, marginTop: 4 }}>{error}</span>}
           </Field>
 
-          <Field label="COMPANY NAME">
-            <TInput name="company" value={form.company} onChange={set('company')} placeholder="Your company name" />
+          <Field label="COMPANY NAME" htmlFor="contact-company">
+            <TInput id="contact-company" name="company" value={form.company} onChange={set('company')} placeholder="Your company name" autoComplete="organization" />
           </Field>
 
-          <Field label="BUDGET">
-            <TSelect name="budget" value={form.budget} onChange={set('budget')} />
+          <Field label="BUDGET" htmlFor="contact-budget">
+            <TSelect id="contact-budget" name="budget" value={form.budget} onChange={set('budget')} autoComplete="off" />
           </Field>
 
           {/* CTA — blue pill */}
@@ -298,7 +309,7 @@ export default function HeroOld() {
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'flex-start', // Fixed left alignment
+            alignItems: 'center', // Center aligned for mobile
             justifyContent: 'flex-start',
             gap: '30px',
             padding: '40px 5% 40px', // Matches Navbar logo padding exactly
@@ -308,7 +319,7 @@ export default function HeroOld() {
           }}
         >
           {/* TEXT CONTENT */}
-          <div className="hero-text-col" style={{ width: '100%', textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <div className="hero-text-col" style={{ width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Trusted Badge */}
             <div style={{
               display: 'inline-flex',
@@ -359,7 +370,7 @@ export default function HeroOld() {
                 lineHeight: 1.05,
                 fontWeight: 700,
                 color: '#FFFFFF',
-                textAlign: 'left',
+                textAlign: 'center',
                 fontFamily: "'Sora', sans-serif"
               }}
             >
@@ -370,7 +381,7 @@ export default function HeroOld() {
               style={{ 
                 width: '100%',
                 maxWidth: '100%',
-                textAlign: 'left',
+                textAlign: 'center',
                 fontSize: '1.05rem', 
                 color: '#FFFFFF',
                 lineHeight: 1.5,

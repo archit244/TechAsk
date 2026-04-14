@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { useSanity, urlFor } from '../lib/useSanity'
+
+const NAVBAR_QUERY = `*[_type == "navbar" && _id == "navbar"][0]`
 
 function DropItem({ label }) {
   return (
@@ -46,6 +49,9 @@ function NavLink({ label, items }) {
 }
 
 export default function Navbar() {
+  const { data: navData } = useSanity(NAVBAR_QUERY)
+  const logoUrl = navData?.logo ? urlFor(navData.logo).url() : "/Gemini_Generated_Image_k3eigvk3eigvk3ei-removebg-preview.png"
+
   return (
     <nav style={{
       position: 'relative', top: 0, zIndex: 1000, width: '100%',
@@ -65,7 +71,7 @@ export default function Navbar() {
         zIndex: 1001
       }}>
         <img 
-          src="/Gemini_Generated_Image_k3eigvk3eigvk3ei-removebg-preview.png" 
+          src={logoUrl}
           alt="TechAsk Logo" 
           style={{ 
             height: '110px', 
