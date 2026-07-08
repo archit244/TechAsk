@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react'
 import { client } from './sanityClient'
-import { createImageUrlBuilder } from '@sanity/image-url'
-
-const builder = createImageUrlBuilder(client)
-export function urlFor(source) {
-  return builder.image(source)
-}
 
 export function useSanity(query, params = {}) {
   const [data, setData] = useState(null)

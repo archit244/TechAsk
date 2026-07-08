@@ -1,55 +1,8 @@
-import { useState } from 'react'
-import { useSanity, urlFor } from '../lib/useSanity'
-
-const NAVBAR_QUERY = `*[_type == "navbar" && _id == "navbar"][0]`
-
-function DropItem({ label }) {
-  return (
-    <a href="#" style={{
-      display: 'block', padding: '10px 0',
-      fontFamily: 'Sora, sans-serif', fontSize: 14, fontWeight: 500,
-      color: '#000', textDecoration: 'none', borderBottom: '1px solid #f0f0f0',
-      transition: 'color 0.2s',
-    }}
-      onMouseEnter={e => (e.currentTarget.style.color = '#ef5a37')}
-      onMouseLeave={e => (e.currentTarget.style.color = '#000')}
-    >{label}</a>
-  )
-}
-
-function NavLink({ label, items }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}
-      onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button style={{
-        background: 'none', border: 'none', cursor: 'pointer',
-        display: 'flex', alignItems: 'center', gap: 4,
-        padding: ' 20px', height: '100%',
-        fontFamily: 'Sora, sans-serif', fontSize: 14, fontWeight: 500, color: '#000',
-      }}>
-        {label}
-        {items && (
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </button>
-      {items && open && (
-        <div style={{
-          position: 'absolute', top: '100%', left: 0, minWidth: 200,
-          background: '#fff', borderBottom: '1px solid #000',
-          padding: '16px 20px', zIndex: 9999, boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
-        }}>
-          {items.map(item => <DropItem key={item} label={item} />)}
-        </div>
-      )}
-    </div>
-  )
-}
+import { useSanityData } from '../lib/sanityContext'
+import { urlFor } from '../lib/sanityClient'
 
 export default function Navbar() {
-  const { data: navData } = useSanity(NAVBAR_QUERY)
+  const { navbar: navData } = useSanityData()
   const logoUrl = navData?.logo ? urlFor(navData.logo).url() : "/Gemini_Generated_Image_k3eigvk3eigvk3ei-removebg-preview.png"
 
   return (

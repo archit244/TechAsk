@@ -1,9 +1,6 @@
-import { useState } from 'react'
-import { useSanity } from '../lib/useSanity'
+import { useState, useEffect } from 'react'
+import { useSanityData } from '../lib/sanityContext'
 import { renderFormattedText } from '../lib/renderFormattedText'
-
-const FAQ_QUERY = `*[_type == "faq"] | order(order asc){ question, answer, order }`
-const FAQ_HEADER_QUERY = `*[_type == "faq"] | order(order asc)[0]{ sectionHeading, sectionSubheading }`
 
 const FALLBACK_FAQS = [
   { question: 'What type of Digital Marketing Services does Techask offer?',              answer: 'We offer a full suite of digital marketing services including Performance Marketing (Google, Meta, LinkedIn Ads), SEO & Local SEO, Social Media Marketing, Web & Landing Page Development, Analytics & Automation, and Influencer & ORM management.' },
@@ -35,41 +32,27 @@ function DownArrow({ color = 'currentColor', isOpen = false }) {
 
 const ROW_H = 100
 
-/* injectGlobalStyles once for the keyframe + clip-path trick */
-const STYLES = `
-@keyframes faq-line-in {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-`
 
 export default function FAQ() {
   const [open, setOpen]       = useState(null)
   const [hovered, setHovered] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
-  const { data: faqs, loading: loadingFaqs }        = useSanity(FAQ_QUERY)
-  const { data: headerData, loading: loadingHeader }  = useSanity(FAQ_HEADER_QUERY)
+  const { faqs } = useSanityData()
 
   /* Responsive check */
-  useState(() => {
-    if (typeof window !== 'undefined') {
-      setIsMobile(window.innerWidth < 1024)
-    }
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
   }, [])
 
-  if (loadingFaqs || loadingHeader) {
-    return <section style={{ minHeight: '400px', background: '#fff' }} />;
-  }
-
-  const items                 = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
-  const headingText = headerData?.sectionHeading || 'Frequently Asked Questions.'
-  const subheadingText = headerData?.sectionSubheading || 'Everything you need to know about working with Techask.'
-
-  const CARD_W = 240
+  const items = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
+  const headingText = (faqs && faqs.length > 0) ? faqs[0].sectionHeading : 'Frequently Asked Questions.'
+  const subheadingText = (faqs && faqs.length > 0) ? faqs[0].sectionSubheading : 'Everything you need to know about working with Techask.'
 
   return (
     <>
-      <style>{STYLES}</style>
       <section
         id="faq"
         style={{
@@ -141,14 +124,14 @@ export default function FAQ() {
                       pointerEvents: 'none',
                     }}
                   />
-                  {/* Animated black sweep line */}
+                  {/* Animated blue sweep line */}
                   <div
                     aria-hidden="true"
                     style={{
                       position: 'absolute',
                       bottom: 0, left: 0, right: 0,
                       height: '1.5px',
-                      background: '#000',
+                      background: '#2563EB',
                       transformOrigin: 'left center',
                       transform: isHover && !isOpen ? 'scaleX(1)' : 'scaleX(0)',
                       transition: isHover && !isOpen
@@ -203,7 +186,7 @@ export default function FAQ() {
                       width: 40,
                       height: 40,
                       borderRadius: '50%',
-                      border: `1px solid ${isOpen ? '#000' : isHover ? '#000' : 'rgba(0,0,0,0.22)'}`,
+                      border: `1px solid ${isOpen ? '#2563EB' : isHover ? '#2563EB' : 'rgba(0,0,0,0.22)'}`,
                       overflow: 'hidden',
                       position: 'relative',
                       transition: 'border-color 0.28s ease',
@@ -217,17 +200,17 @@ export default function FAQ() {
                         justifyContent: 'center',
                         background: 'transparent',
                       }}>
-                        <DownArrow color="#333" isOpen={isOpen} />
+                        <DownArrow color={isOpen ? "#2563EB" : "#333"} isOpen={isOpen} />
                       </span>
 
-                      {/* Layer 2 — hover black circle, slides in from bottom-left ONLY when closed */}
+                      {/* Layer 2 — hover blue circle, slides in from bottom-left ONLY when closed */}
                       <span style={{
                         position: 'absolute',
                         inset: 0,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: '#000',
+                        background: '#2563EB',
                         transform: isHover && !isOpen
                           ? 'translate(0%, 0%)'
                           : 'translate(-110%, 110%)',

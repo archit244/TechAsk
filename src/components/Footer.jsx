@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
 import { FaLinkedinIn, FaInstagram, FaYoutube, FaFacebookF } from 'react-icons/fa'
 import GradientText from './GradientText'
-import { useSanity } from '../lib/useSanity'
-
-const FOOTER_QUERY = `*[_type == "footer" && _id == "footer"][0]`
+import { useSanityData } from '../lib/sanityContext'
 
 export default function Footer() {
   const [isMobile, setIsMobile] = useState(false);
-  const { data: footerData, loading } = useSanity(FOOTER_QUERY);
+  const { footer: footerData } = useSanityData();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -16,12 +14,7 @@ export default function Footer() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  if (loading) {
-    return <footer style={{ minHeight: '400px', background: '#2563EB' }} />;
-  }
-
   const brandingLine1 = footerData?.brandingLine1 || 'Techask';
-  const brandingLine2 = footerData?.brandingLine2 || 'India';
   const subText = footerData?.subText || 'Proudly created in India.';
   const copyrightText = footerData?.copyrightText || 'All Right Reserved, All Wrong Reversed.';
   const linkedinUrl  = footerData?.linkedinUrl  || '#';
@@ -71,19 +64,6 @@ export default function Footer() {
             color: '#FFFFFF'
           }}>
             {brandingLine1}
-          </h2>
-          <h2 style={{
-            fontFamily: "'Sora', sans-serif",
-            fontWeight: 900,
-            fontSize: isMobile ? 'clamp(24px, 7vw, 45px)' : 'clamp(20px, 5vw, 90px)',
-            lineHeight: 0.85,
-            letterSpacing: '-0.05em',
-            margin: 0,
-            textAlign: 'right',
-            color: '#FFFFFF',
-            opacity: 0.95
-          }}>
-            {brandingLine2}
           </h2>
         </div>
 

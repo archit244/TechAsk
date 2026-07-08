@@ -1,21 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
 
-@font-face {
-  font-family: 'Neue Haas Grotesk';
-  src: url('/fonts/nhaasgrotesktxpro-55rg.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
 
-@font-face {
-  font-family: 'Neurialgrotesk Bold';
-  src: url('/fonts/neurialgrotesk-bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 
 @tailwind base;
 @tailwind components;
@@ -48,25 +34,6 @@
 /* ── CUSTOM COMPONENTS ───────────────────────────────────── */
 @layer components {
 
-  /* Gradient text */
-  .grad-text {
-    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Primary gradient button */
-  .btn-primary {
-    @apply inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-sm text-white cursor-pointer border-none whitespace-nowrap tracking-wide;
-    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.40);
-    transition: all .3s cubic-bezier(0.4,0,0.2,1);
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 28px rgba(14,165,233,0.55);
-  }
 
   /* Marquee logos strip */
   .logos-track { @apply flex w-max animate-marquee; }
@@ -112,43 +79,6 @@
 /* ── CUSTOM UTILITIES ────────────────────────────────────── */
 @layer utilities {
 
-  /* Gradient button background utility */
-  .bg-grad-btn {
-    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
-  }
-
-  /* Glass card */
-  .glass-card {
-    background: rgba(255,255,255,0.80);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.95);
-    box-shadow:
-      0 4px 6px rgba(0,0,0,0.02),
-      0 16px 48px rgba(11,59,110,0.08),
-      inset 0 1px 0 rgba(255,255,255,1);
-  }
-  .glass-card:hover {
-    box-shadow:
-      0 4px 6px rgba(0,0,0,0.02),
-      0 32px 70px rgba(11,59,110,0.13),
-      0 0 0 1px rgba(14,165,233,0.18),
-      0 0 60px rgba(14,165,233,0.06),
-      inset 0 1px 0 rgba(255,255,255,1);
-  }
-
-  /* Mobile nav slide-down */
-  .animate-slide-down { animation: slideDown 0.24s cubic-bezier(0.25,0.46,0.45,0.94); }
-
-  /* New Gradient System */
-  .text-gradient {
-    background: linear-gradient(90deg, #2563EB, #7C3AED, #2563EB);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-  }
-
   .btn-gradient-hover {
     transition: background 0.3s ease, transform 0.2s ease;
   }
@@ -159,69 +89,9 @@
   }
 }
 
-/* ── BORDER BEAM ─────────────────────────────────────────── */
-.border-beam {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  z-index: 10;
-  -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
-  -webkit-mask-position: 0 0, 2px 2px;
-  -webkit-mask-size: 100% 100%, calc(100% - 4px) calc(100% - 4px);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-composite: xor;
-  mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
-  mask-position: 0 0, 2px 2px;
-  mask-size: 100% 100%, calc(100% - 4px) calc(100% - 4px);
-  mask-repeat: no-repeat;
-  mask-composite: exclude;
-}
-.border-beam::after {
-  content: '';
-  position: absolute;
-  width: 200vmax;
-  height: 200vmax;
-  top: 50%; left: 50%;
-  translate: -50% -50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 65%,
-    var(--beam-from, #38bdf8) 80%,
-    var(--beam-to, #0ea5e9) 90%,
-    transparent 100%
-  );
-  animation: border-beam-spin var(--beam-duration, 7s) linear var(--beam-delay, 0s) infinite;
-}
-@keyframes border-beam-spin { to { rotate: 360deg; } }
 
-/* ── BACKLIGHT ───────────────────────────────────────────── */
-.backlight-wrapper {
-  position: relative;
-  isolation: isolate;
-}
 
-.backlight-glow {
-  pointer-events: none;
-  position: absolute;
-  border-radius: inherit;
-  z-index: -1;
-  inset: -32px;
-  background: radial-gradient(
-    ellipse at center,
-    var(--bl-color-inner, rgba(56,189,248,0.55)) 0%,
-    var(--bl-color-mid,   rgba(14,165,233,0.30)) 40%,
-    transparent 70%
-  );
-  filter: blur(var(--bl-blur, 36px));
-  animation: backlight-pulse var(--bl-duration, 3s) ease-in-out infinite;
-}
 
-@keyframes backlight-pulse {
-  0%, 100% { opacity: 0.70; transform: scale(1); }
-  50%       { opacity: 1.0;  transform: scale(1.07); }
-}
 
 /* ── MISC ─────────────────────────────────────────────────── */
 .aspect-16-9 { aspect-ratio: 16 / 9; }

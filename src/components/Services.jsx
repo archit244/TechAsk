@@ -1,10 +1,7 @@
-import React from 'react';
-import GradientText from './GradientText';
-import { useSanity, urlFor } from '../lib/useSanity';
+import { useState, useEffect } from 'react';
+import { useSanityData } from '../lib/sanityContext';
+import { urlFor } from '../lib/sanityClient';
 import { renderFormattedText } from '../lib/renderFormattedText';
-
-const SERVICES_QUERY = `*[_type == "service"] | order(order asc)`
-const SERVICES_HEADING_QUERY = `*[_type == "service"] | order(order asc)[0].sectionHeading`
 
 const SERVICES_DATA = [
   {
@@ -35,23 +32,18 @@ const SERVICES_DATA = [
 ];
 
 export default function Services() {
-  const [isMobile, setIsMobile] = React.useState(false);
-  const { data, loading: loadingServices } = useSanity(SERVICES_QUERY);
-  const { data: headingData, loading: loadingHeading } = useSanity(SERVICES_HEADING_QUERY);
+  const [isMobile, setIsMobile] = useState(false);
+  const { services } = useSanityData();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  if (loadingServices || loadingHeading) {
-    return <section style={{ minHeight: '600px', background: '#fff' }} />;
-  }
-
-  const servicesList = (data && data.length > 0) ? data : SERVICES_DATA;
-  const headingText = headingData || 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
+  const servicesList = (services && services.length > 0) ? services : SERVICES_DATA;
+  const headingText = (services && services.length > 0) ? services[0].sectionHeading : 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
 
   const handleCTA = (e) => {
     if (e) e.preventDefault();

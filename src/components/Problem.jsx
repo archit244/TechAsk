@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { MeshGradient } from '@paper-design/shaders-react'
 import TiltedCard from './TiltedCard'
-import { useSanity } from '../lib/useSanity'
+import { useSanityData } from '../lib/sanityContext'
 import GradientText from './GradientText'
 import { renderFormattedText } from '../lib/renderFormattedText'
-
-const PROBLEM_QUERY = `*[_type == "problem" && _id == "problem"][0]`
 
 const FALLBACK_CARDS = [
   { title: "You're Spending Without Scalable Systems",      num: '01' },
@@ -13,9 +11,7 @@ const FALLBACK_CARDS = [
   { title: 'You Lack the Data to Make Confident Decisions', num: '03' },
 ]
 
-// Card dimensions — must be explicit px so WebGL canvas and % sizing work
-// Card dimensions
-// Card dimensions
+// Card dimensions — must be explicit px so the % sizing works
 const CARD_W_PX  = 440
 const CARD_H_PX  = 480
 const MOB_W      = 320
@@ -24,7 +20,7 @@ const MOB_H      = 360
 export default function Problem() {
   const [active, setActive] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
-  const { data: problem, loading } = useSanity(PROBLEM_QUERY)
+  const { problem } = useSanityData()
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024)
@@ -32,10 +28,6 @@ export default function Problem() {
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
-
-  if (loading) {
-    return <section style={{ minHeight: '100vh', background: '#fff' }} />;
-  }
 
   const curW = isMobile ? MOB_W : CARD_W_PX
   const curH = isMobile ? MOB_H : CARD_H_PX

@@ -1,5 +1,3 @@
-import React from "react";
-
 /**
  * GradientText Component
  * A high-performance animated gradient text component.

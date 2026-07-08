@@ -1,9 +1,7 @@
 import React from 'react';
 import GradientText from './GradientText';
-import { useSanity } from '../lib/useSanity';
+import { useSanityData } from '../lib/sanityContext';
 import { renderFormattedText } from '../lib/renderFormattedText';
-
-const PROCESS_QUERY = `*[_type == "process" && _id == "process"][0]`
 
 const PROCESS_STEPS = [
   {
@@ -53,11 +51,7 @@ const PROCESS_STEPS = [
 ];
 
 export default function Process() {
-  const { data: processData, loading } = useSanity(PROCESS_QUERY);
-
-  if (loading) {
-    return <section style={{ minHeight: '500px', background: '#fff' }} />;
-  }
+  const { process: processData } = useSanityData();
   
   const headingText = processData?.heading || "Our Proven [4-Step Growth] Framework";
 

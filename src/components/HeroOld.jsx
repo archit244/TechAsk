@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import GradientText from './GradientText'
-import { useSanity } from '../lib/useSanity'
+import { useSanityData } from '../lib/sanityContext'
 import { renderFormattedText } from '../lib/renderFormattedText'
-
-const HERO_QUERY = `*[_type == "hero" && _id == "hero"][0]`
+import { insertLead } from '../services/leadService'
 
 /* ─────────────────────────────────────────────────────────────
    MARQUEE
@@ -127,6 +126,8 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', budget: '' })
   const [hovered, setHovered] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isPhoneFocused, setIsPhoneFocused] = useState(false)
 
   const isValid = form.name.trim() !== '' && form.email.includes('@') && form.phone.length === 10 && form.company.trim() !== '' && form.budget !== '';
@@ -139,15 +140,63 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
     }
     setForm(f => ({ ...f, [k]: val }));
     setError('');
+    setSuccess('');
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 1. Validate required fields
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.company.trim() || !form.budget) {
+      setError('All fields are required');
+      return;
+    }
+
+    // 2. Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // 3. Validate phone length
     if (form.phone.length !== 10) {
       setError('Please enter a valid 10-digit phone number');
       return;
     }
-    navigate('/thank-you');
+
+    setIsSubmitting(true);
+    setError('');
+    setSuccess('');
+
+    // 4. Insert lead to Supabase
+    const { data, error: insertError } = await insertLead({
+      full_name: form.name.trim(),
+      email: form.email.trim(),
+      phone_number: form.phone.trim(),
+      company_name: form.company.trim(),
+      budget: form.budget
+    });
+
+    if (insertError) {
+      setIsSubmitting(false);
+      if (import.meta.env.DEV) {
+        setError(`Failed to save lead: ${insertError.message || insertError}`);
+      } else {
+        setError('Failed to submit form. Please check your connection and try again.');
+      }
+      return;
+    }
+
+    // 5. Success
+    setSuccess('Strategy call booked successfully!');
+    setForm({ name: '', email: '', phone: '', company: '', budget: '' });
+    setIsSubmitting(false);
+
+    // Redirect after a short delay
+    setTimeout(() => {
+      navigate('/thank-you');
+    }, 1500);
   }
 
   return (
@@ -211,7 +260,9 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
                 autoComplete="tel"
               />
             </div>
-            {error && <span style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 600, marginTop: 4 }}>{error}</span>}
+            {error && error.toLowerCase().includes('phone') && (
+              <span style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 600, marginTop: 4 }}>{error}</span>
+            )}
           </Field>
 
           <Field label="COMPANY NAME" htmlFor="contact-company">
@@ -225,7 +276,7 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
           {/* CTA — blue pill */}
           <button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || isSubmitting}
             className="btn-gradient-hover"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -237,15 +288,27 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
               border: 'none', borderRadius: 999,
               padding: '12px 30px',
               width: '100%',
-              cursor: isValid ? 'pointer' : 'not-allowed',
+              cursor: isValid && !isSubmitting ? 'pointer' : 'not-allowed',
               letterSpacing: '0.01em',
-              transform: isValid && hovered ? 'scale(1.02)' : 'scale(1)',
+              transform: isValid && !isSubmitting && hovered ? 'scale(1.02)' : 'scale(1)',
               transition: 'transform 0.2s ease, background 0.3s ease, opacity 0.2s ease',
-              opacity: !isValid ? 0.4 : (hovered ? 0.95 : 1),
+              opacity: !isValid || isSubmitting ? 0.4 : (hovered ? 0.95 : 1),
             }}
           >
-            {ctaText || "Book My Strategy Call"}
+            {isSubmitting ? "Submitting..." : (ctaText || "Book My Strategy Call")}
           </button>
+
+          {error && !error.toLowerCase().includes('phone') && (
+            <div style={{ fontFamily: F, fontSize: '0.75rem', fontWeight: 600, color: '#ef4444', textAlign: 'center', marginTop: 4 }}>
+              {error}
+            </div>
+          )}
+
+          {success && (
+            <div style={{ fontFamily: F, fontSize: '0.78rem', fontWeight: 600, color: '#16a34a', textAlign: 'center', marginTop: 4 }}>
+              {success}
+            </div>
+          )}
         </form>
     </div>
   )
@@ -256,7 +319,7 @@ function ContactForm({ formHeading, ctaText, successTitle, successBody }) {
 ───────────────────────────────────────────────────────────────*/
 export default function HeroOld() {
   const [isMobile, setIsMobile] = useState(false)
-  const { data: hero, loading } = useSanity(HERO_QUERY)
+  const { hero } = useSanityData()
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024)
@@ -264,19 +327,6 @@ export default function HeroOld() {
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
-
-  if (loading) {
-    return (
-      <div 
-        style={{ 
-          height: 'calc(100vh - 64px)', 
-          minHeight: 380, 
-          background: '#2563EB',
-          width: '100%'
-        }} 
-      />
-    )
-  }
 
   const badgeText = hero?.badgeText || "Trusted By [100+] Founders"
   const titleText = hero?.title || "Your Creative, Media & Technology {Transformation} Partner"
@@ -293,6 +343,7 @@ export default function HeroOld() {
   if (isMobile) {
     return (
       <div
+        id="hero-section"
         className="section-hero_main"
         style={{
           height: 'auto',
@@ -426,6 +477,7 @@ export default function HeroOld() {
   // Original Desktop Layout
   return (
     <div
+      id="hero-section"
       className="section-hero_main"
       style={{
         height: 'calc(100vh - 64px)',
