@@ -48,8 +48,8 @@ export default function FAQ() {
   }, [])
 
   const items = (faqs && faqs.length > 0) ? faqs : FALLBACK_FAQS
-  const headingText = (faqs && faqs.length > 0) ? faqs[0].sectionHeading : 'Frequently Asked Questions.'
-  const subheadingText = (faqs && faqs.length > 0) ? faqs[0].sectionSubheading : 'Everything you need to know about working with Techask.'
+  const headingText = (faqs && faqs.length > 0 ? faqs[0].sectionHeading : null) || 'Frequently Asked Questions.'
+  const subheadingText = (faqs && faqs.length > 0 ? faqs[0].sectionSubheading : null) || 'Everything you need to know about working with Techask.'
 
   return (
     <>

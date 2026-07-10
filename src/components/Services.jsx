@@ -43,7 +43,7 @@ export default function Services() {
   }, []);
 
   const servicesList = (services && services.length > 0) ? services : SERVICES_DATA;
-  const headingText = (services && services.length > 0) ? services[0].sectionHeading : 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
+  const headingText = (services && services.length > 0 ? services[0].sectionHeading : null) || 'Everything You Need Under One Roof:\n[Strategy], [Execution] & [Scale]';
 
   const handleCTA = (e) => {
     if (e) e.preventDefault();
