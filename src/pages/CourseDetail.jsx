@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { coursesData } from '../data/coursesData'
+import { useScrollReveal } from '../hooks/useScrollReveal'
 
 const F = "'Sora', sans-serif"
 const BLUE = '#2563EB'
@@ -325,6 +326,10 @@ export default function CourseDetail() {
     }
   }, [courseId])
 
+  const [heroRef, heroVisible]           = useScrollReveal(0.1)
+  const [highlightsRef, highlightsVisible] = useScrollReveal(0.1)
+  const [curriculumRef, curriculumVisible] = useScrollReveal(0.1)
+
   if (!course) return null
 
   /* ─────── shared styles ─────── */
@@ -361,7 +366,10 @@ export default function CourseDetail() {
       {/* ══════════════════════════════════════════════════════
           HERO — dark background, title left, info card right
           ══════════════════════════════════════════════════════ */}
-      <section style={{
+      <section
+        ref={heroRef}
+        className={`page-enter`}
+        style={{
         position: 'relative', overflow: 'hidden',
         background: '#2563EB',
         padding: isMobile ? '32px 5% 32px' : '40px 5% 30px', color: '#fff', minHeight: 300
@@ -540,13 +548,19 @@ export default function CourseDetail() {
         <div style={{ maxWidth: 1250 }}>
           {sectionTitle(`Key Highlights: ${course.title}`, '')}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+          <div
+            ref={highlightsRef}
+            className={`stagger-children`}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}
+          >
             {course.whatYouLearn.map((item, idx) => (
-              <div key={idx} style={{
-                border: '1.5px solid #e2e8f0', borderRadius: 14,
-                padding: '28px 20px', textAlign: 'center', background: '#fff',
-                transition: 'box-shadow 0.2s, border-color 0.2s, transform 0.2s'
-              }}
+              <div key={idx}
+                className={`reveal${highlightsVisible ? ' visible' : ''}`}
+                style={{
+                  border: '1.5px solid #e2e8f0', borderRadius: 14,
+                  padding: '28px 20px', textAlign: 'center', background: '#fff',
+                  transition: `box-shadow 0.2s, border-color 0.2s, transform 0.2s, opacity 0.65s cubic-bezier(0.16,1,0.3,1) ${idx * 80}ms`,
+                }}
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 8px 28px ${BLUE}18`; e.currentTarget.style.borderColor = `${BLUE}50`; e.currentTarget.style.transform = 'translateY(-4px)' }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.transform = 'translateY(0)' }}
               >
@@ -628,6 +642,7 @@ export default function CourseDetail() {
                   <div style={{ display: 'flex', justifyContent: isLeft ? 'flex-start' : 'flex-end', alignItems: 'center', height: '100%', padding: '0 10px', width: '100%' }}>
                     <div
                       ref={el => dotRefs.current[idx] = el}
+                      className="pulse-dot"
                       style={{
                         width: 20, height: 20, borderRadius: '50%',
                         background: '#fff',

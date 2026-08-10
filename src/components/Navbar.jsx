@@ -246,12 +246,13 @@ export default function Navbar({ theme = 'blue' }) {
             </button>
 
             {/* Nav links */}
-            <nav style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <nav className={`${menuOpen ? 'drawer-open' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {navLinks.map(link => (
                 <Link
                   key={link.label}
                   to={link.to}
                   onClick={link.isHash ? (e) => handleHashClick(e, link.to) : () => setMenuOpen(false)}
+                  className="drawer-item"
                   style={{
                     color: linkClr,
                     textDecoration: 'none',
@@ -263,7 +264,7 @@ export default function Navbar({ theme = 'blue' }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    opacity: 0.92,
+                    opacity: menuOpen ? undefined : 0,  // let CSS handle it
                   }}
                 >
                   {link.label}

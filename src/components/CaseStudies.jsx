@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import GradientText from './GradientText';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const F_SORA = "'Sora', sans-serif";
 const F_INTER = "'Inter', sans-serif";
@@ -149,6 +150,7 @@ export default function CaseStudies() {
   };
 
   const active = CASE_STUDIES[current];
+  const [titleRef, titleVisible] = useScrollReveal(0.2);
 
   return (
     <section 
@@ -175,16 +177,20 @@ export default function CaseStudies() {
       <div style={{ maxWidth: '1200px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         
         {/* Title */}
-        <h2 style={{
-          fontFamily: F_SORA,
-          fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
-          fontWeight: 700,
-          textAlign: 'center',
-          color: '#FFFFFF',
-          margin: '0 0 64px 0',
-          letterSpacing: '-0.02em',
-          lineHeight: 1.2
-        }}>
+        <h2
+          ref={titleRef}
+          className={`reveal${titleVisible ? ' visible' : ''}`}
+          style={{
+            fontFamily: F_SORA,
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            fontWeight: 700,
+            textAlign: 'center',
+            color: '#FFFFFF',
+            margin: '0 0 64px 0',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}
+        >
           Brands That Grew with TechAsk
         </h2>
 
@@ -258,7 +264,7 @@ export default function CaseStudies() {
                 </div>
 
                 {/* Inner Screen */}
-                <div style={{
+                <div key={current} className="cs-slide-in" style={{
                   flex: 1,
                   background: active.mockupBg,
                   display: 'flex',
@@ -322,11 +328,10 @@ export default function CaseStudies() {
           </div>
 
           {/* Right Column: Case Study Details */}
-          <div key={current} style={{
+          <div key={current} className="cs-slide-in" style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '16px',
-            animation: 'slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
           }}>
             {/* Title / Name */}
             <div>
