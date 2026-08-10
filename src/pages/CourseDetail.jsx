@@ -364,9 +364,15 @@ export default function CourseDetail() {
       <section style={{
         position: 'relative', overflow: 'hidden',
         background: '#2563EB',
-        padding: '40px 5% 30px', color: '#fff', minHeight: 300
+        padding: isMobile ? '32px 5% 32px' : '40px 5% 30px', color: '#fff', minHeight: 300
       }}>
-        <div style={{ maxWidth: 1250, display: 'grid', gridTemplateColumns: '1fr 320px', gap: 48, alignItems: 'center' }}>
+        <div style={{
+          maxWidth: 1250,
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 340px',
+          gap: isMobile ? 28 : 48,
+          alignItems: 'center'
+        }}>
 
           {/* LEFT */}
           <div>
@@ -468,7 +474,9 @@ export default function CourseDetail() {
           <div style={{
             background: '#fff', borderRadius: 14, padding: '24px 22px',
             boxShadow: '0 16px 48px rgba(0,0,0,0.28)', color: NAVY,
-            width: 340, flexShrink: 0, alignSelf: 'center'
+            width: isMobile ? '100%' : 340,
+            flexShrink: 0, alignSelf: 'center',
+            boxSizing: 'border-box',
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 20 }}>
               {[
@@ -490,13 +498,13 @@ export default function CourseDetail() {
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, flexDirection: isMobile ? 'column' : 'row' }}>
               <button
                 onClick={() => navigate(`/apply?course=${encodeURIComponent(course.title)}`)}
                 style={{
-                  flex: 1, fontFamily: F, fontSize: '0.8rem', fontWeight: 700,
+                  flex: 1, fontFamily: F, fontSize: '0.9rem', fontWeight: 700,
                   color: '#fff', background: BLUE, border: 'none',
-                  borderRadius: 8, padding: '8px 10px', cursor: 'pointer',
+                  borderRadius: 8, padding: '12px 10px', cursor: 'pointer',
                   whiteSpace: 'nowrap',
                   boxShadow: `0 4px 14px ${BLUE}30`,
                   transition: 'transform 0.2s, box-shadow 0.2s'
@@ -508,10 +516,10 @@ export default function CourseDetail() {
               </button>
               <button
                 style={{
-                  flex: 1, fontFamily: F, fontSize: '0.8rem', fontWeight: 700,
+                  flex: 1, fontFamily: F, fontSize: '0.9rem', fontWeight: 700,
                   color: BLUE, background: 'transparent',
                   border: `1.5px solid ${BLUE}`, borderRadius: 8,
-                  padding: '8px 10px', cursor: 'pointer',
+                  padding: '12px 10px', cursor: 'pointer',
                   whiteSpace: 'nowrap',
                   transition: 'background 0.2s'
                 }}
@@ -738,9 +746,9 @@ export default function CourseDetail() {
                   {isOpen && (
                     <div style={{
                       borderTop: '1.5px solid #f1f5f9',
-                      padding: '24px 24px 24px 56px'
+                      padding: isMobile ? '20px 16px' : '24px 24px 24px 56px'
                     }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24 }}>
                         <div>
                           <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: NAVY, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Key Topics</h4>
                           <ul style={{ paddingLeft: 0, listStyle: 'none', margin: 0 }}>
