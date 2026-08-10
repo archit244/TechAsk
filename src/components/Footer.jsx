@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { FaLinkedinIn, FaInstagram, FaYoutube, FaFacebookF } from 'react-icons/fa'
+import { useLocation, useNavigate } from 'react-router-dom'
 import GradientText from './GradientText'
 import { useSanityData } from '../lib/sanityContext'
 
 export default function Footer() {
   const [isMobile, setIsMobile] = useState(false);
   const { footer: footerData } = useSanityData();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -21,6 +24,34 @@ export default function Footer() {
   const instagramUrl = footerData?.instagramUrl || '#';
   const youtubeUrl   = footerData?.youtubeUrl   || '#';
   const facebookUrl  = footerData?.facebookUrl  || '#';
+
+  const handleLinkClick = (e, id) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate(`/#${id}`);
+      setTimeout(() => {
+        if (id === 'contact') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          const el = document.getElementById('contact-name');
+          if (el) el.focus();
+        } else {
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    } else {
+      if (id === 'contact') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          const el = document.getElementById('contact-name');
+          if (el) el.focus();
+        }, 1000);
+      } else {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <footer style={{ 
@@ -69,13 +100,7 @@ export default function Footer() {
 
         {/* CTA Button below text */}
         <button 
-           onClick={() => {
-             window.scrollTo({ top: 0, behavior: 'smooth' });
-             setTimeout(() => {
-               const el = document.getElementById('contact-name');
-               if (el) el.focus();
-             }, 1000);
-           }}
+           onClick={(e) => handleLinkClick(e, 'contact')}
            style={{
              color: '#000',
              backgroundColor: '#fff',
@@ -123,49 +148,77 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Nav Links */}
+        {/* Nav Links — main + legal stacked */}
         <nav style={{ 
-          display: 'flex', 
-          flexWrap: 'wrap',
-          gap: isMobile ? '24px' : '32px', 
-          justifyContent: 'center'
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '14px'
         }}>
-          {[
-            { label: 'Contact', id: 'contact' },
-            { label: 'Services', id: 'services' },
-            { label: 'Framework', id: 'process' },
-            { label: 'FAQ', id: 'faq' }
-          ].map(item => (
-            <a 
-              key={item.label} 
-              href={`#${item.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                if (item.id === 'contact') {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setTimeout(() => {
-                    const el = document.getElementById('contact-name');
-                    if (el) el.focus();
-                  }, 1000);
-                } else {
-                  const el = document.getElementById(item.id);
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              style={{ 
-                color: '#fff', 
-                fontSize: 14, 
-                fontWeight: 500, 
-                textDecoration: 'none', 
-                opacity: 0.9,
-                cursor: 'pointer'
-              }}
-              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}
-            >
-              {item.label}
-            </a>
-          ))}
+          {/* Primary links */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? '20px' : '32px', justifyContent: 'center' }}>
+            {[
+              { label: 'About Us', href: '/about' },
+              { label: 'Contact', id: 'contact' },
+              { label: 'Services', id: 'services' },
+              { label: 'Framework', id: 'process' },
+              { label: 'FAQ', id: 'faq' }
+            ].map(item => (
+              <a 
+                key={item.label} 
+                href={item.href || `#${item.id}`}
+                onClick={(e) => {
+                  if (item.href) {
+                    e.preventDefault();
+                    navigate(item.href);
+                  } else {
+                    handleLinkClick(e, item.id);
+                  }
+                }}
+                style={{ 
+                  color: '#fff', 
+                  fontSize: 14, 
+                  fontWeight: 500, 
+                  textDecoration: 'none', 
+                  opacity: 0.9,
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Legal links */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? '16px' : '24px', justifyContent: 'center' }}>
+            {[
+              { label: 'Privacy Policy',     href: '/privacy-policy' },
+              { label: 'Cookie Policy',      href: '/cookie-policy' },
+              { label: 'Terms & Conditions', href: '/terms-and-conditions' }
+            ].map(item => (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => { e.preventDefault(); navigate(item.href); }}
+                style={{
+                  color: '#fff',
+                  fontSize: 12,
+                  fontWeight: 500,
+                  fontFamily: "'Sora', sans-serif",
+                  textDecoration: 'none',
+                  opacity: 0.9,
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
         </nav>
 
         {/* Copyright */}
@@ -185,6 +238,7 @@ export default function Footer() {
         </div>
 
       </div>
+
     </footer>
   )
 }

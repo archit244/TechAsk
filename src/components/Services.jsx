@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useSanityData } from '../lib/sanityContext';
 import { urlFor } from '../lib/sanityClient';
 import { renderFormattedText } from '../lib/renderFormattedText';
@@ -30,6 +31,16 @@ const SERVICES_DATA = [
     image: "/image5.png"
   }
 ];
+
+const getServicePath = (title) => {
+  const t = title.toLowerCase();
+  if (t.includes('performance')) return '/services/performance-marketing';
+  if (t.includes('seo')) return '/services/seo-local-seo';
+  if (t.includes('social') || t.includes('creative')) return '/services/social-media-creative';
+  if (t.includes('web') || t.includes('landing')) return '/services/web-landing-pages';
+  if (t.includes('analytics') || t.includes('automation')) return '/services/analytics-automation';
+  return '/';
+};
 
 export default function Services() {
   const [isMobile, setIsMobile] = useState(false);
@@ -139,34 +150,63 @@ export default function Services() {
                   {service.description}
                 </p>
 
-                <button 
-                  onClick={handleCTA}
-                  className="btn-gradient-hover"
-                  style={{
-                    alignSelf: 'flex-start',
-                    backgroundColor: '#2563EB',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '10px 22px',
-                    fontSize: '0.95rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginTop: '10px',
-                    transition: 'transform 0.2s ease, background-color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.03)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
-                >
-                  Talk to our Expert →
-                </button>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '10px' }}>
+                  <Link 
+                    to={getServicePath(service.title)}
+                    className="btn-gradient-hover"
+                    style={{
+                      backgroundColor: '#2563EB',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      borderRadius: '12px',
+                      padding: '10px 22px',
+                      fontSize: '0.95rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'transform 0.2s ease, background-color 0.2s ease',
+                      textDecoration: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.03)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    Explore Service →
+                  </Link>
+
+                  <button 
+                    onClick={handleCTA}
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: '#2563EB',
+                      border: '2px solid #2563EB',
+                      borderRadius: '12px',
+                      padding: '8px 20px',
+                      fontSize: '0.95rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'transform 0.2s ease, background-color 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.03)';
+                      e.currentTarget.style.backgroundColor = '#eff6ff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    Talk to our Expert
+                  </button>
+                </div>
               </div>
 
             </div>
