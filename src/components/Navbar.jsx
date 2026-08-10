@@ -56,11 +56,11 @@ export default function Navbar({ theme = 'blue' }) {
           src={logoSrc}
           alt="TechAsk Logo"
           style={{
-            height: isMobile ? '80px' : '110px',
+            height: isMobile ? '96px' : '110px',
             width: 'auto',
             display: 'block',
             position: 'absolute',
-            top: isMobile ? '-10px' : '-15px',
+            top: isMobile ? '-14px' : '-15px',
             left: 0,
             filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.06))'
           }}
@@ -83,25 +83,25 @@ export default function Navbar({ theme = 'blue' }) {
       onClick={() => setMenuOpen(o => !o)}
       style={{
         background: 'none', border: 'none', cursor: 'pointer',
-        padding: '6px', display: 'flex', flexDirection: 'column',
-        justifyContent: 'center', alignItems: 'center', gap: '5px',
+        padding: '10px', display: 'flex', flexDirection: 'column',
+        justifyContent: 'center', alignItems: 'center', gap: '6px',
         zIndex: 1100
       }}
     >
       {[0, 1, 2].map(i => (
         <span key={i} style={{
           display: 'block',
-          width: 24,
-          height: 2.5,
-          borderRadius: 2,
+          width: 28,
+          height: 3,
+          borderRadius: 3,
           background: linkClr,
           transition: 'transform 0.25s ease, opacity 0.25s ease',
           transformOrigin: 'center',
           transform:
             menuOpen
-              ? i === 0 ? 'translateY(7.5px) rotate(45deg)'
+              ? i === 0 ? 'translateY(9px) rotate(45deg)'
               : i === 1 ? 'opacity(0) scale(0)'
-              : 'translateY(-7.5px) rotate(-45deg)'
+              : 'translateY(-9px) rotate(-45deg)'
               : 'none',
           opacity: menuOpen && i === 1 ? 0 : 1,
         }} />
@@ -118,7 +118,7 @@ export default function Navbar({ theme = 'blue' }) {
         width: '100%',
         background: navBg,
         borderBottom: isWhiteTheme ? '1px solid #E2E8F0' : 'none',
-        height: isMobile ? 64 : 72,
+        height: isMobile ? 72 : 72,
         padding: isMobile ? '0 5%' : '14px 5% 0',
         display: 'flex',
         alignItems: 'center',
@@ -140,8 +140,8 @@ export default function Navbar({ theme = 'blue' }) {
               display: 'flex',
               alignItems: 'center',
               position: 'relative',
-              width: isMobile ? '140px' : '180px',
-              height: isMobile ? '56px' : '64px',
+              width: isMobile ? '160px' : '180px',
+              height: isMobile ? '68px' : '64px',
               zIndex: 1001,
               flexShrink: 0,
             }}

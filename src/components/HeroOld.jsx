@@ -347,7 +347,7 @@ export default function HeroOld() {
         className="section-hero_main"
         style={{
           height: 'auto',
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: 'calc(100vh - 72px)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -363,7 +363,7 @@ export default function HeroOld() {
             alignItems: 'center', // Center aligned for mobile
             justifyContent: 'flex-start',
             gap: '30px',
-            padding: '40px 5% 40px', // Matches Navbar logo padding exactly
+            padding: '20px 5% 40px', // Matches Navbar logo padding exactly
             boxSizing: 'border-box',
             width: '100%',
             margin: '0',
